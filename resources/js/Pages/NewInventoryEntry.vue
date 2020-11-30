@@ -111,10 +111,10 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr
-                                                                v-for="color in getProductAvailableColors(
+                                                                v-for="(color, index) in getProductAvailableColors(
                                                                     product.product_stock
                                                                 )"
-                                                                :key="
+                                                                :key="  
                                                                     color.color_id
                                                                 "
                                                             >
@@ -133,7 +133,6 @@
                                                                         dense
                                                                         class="mt-4"
                                                                         min="0"
-                                                                        step="1"
                                                                         :rules="[
                                                                             rules.required
                                                                         ]"
@@ -156,6 +155,7 @@
                                                                         filled
                                                                         dense
                                                                         class="mt-4"
+                                                                        min="0"
                                                                         :rules="[
                                                                             rules.required
                                                                         ]"
@@ -178,6 +178,7 @@
                                                                         filled
                                                                         dense
                                                                         class="mt-4"
+                                                                        min="0"
                                                                         :rules="[
                                                                             rules.required
                                                                         ]"
@@ -200,6 +201,7 @@
                                                                         filled
                                                                         dense
                                                                         class="mt-4"
+                                                                        min="0"
                                                                         :rules="[
                                                                             rules.required
                                                                         ]"
@@ -225,6 +227,7 @@
                                                                             rules.required
                                                                         ]"
                                                                         class="mt-4"
+                                                                        min="0"
                                                                         :disabled="
                                                                             isAvailableSize(
                                                                                 product.product_stock,
@@ -244,6 +247,7 @@
                                                                         filled
                                                                         dense
                                                                         class="mt-4"
+                                                                        min="0"
                                                                         :rules="[
                                                                             rules.required
                                                                         ]"
@@ -266,6 +270,7 @@
                                                                         filled
                                                                         dense
                                                                         class="mt-4"
+                                                                        min="0"
                                                                         :rules="[
                                                                             rules.required
                                                                         ]"
@@ -284,6 +289,7 @@
                                                                 >
                                                                     0
                                                                 </td> -->
+                                                                {{color.color_id}}
                                                             </tr>
                                                         </tbody>
                                                         <!-- <tfoot>
@@ -498,13 +504,14 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr
-                                                                v-for="color in getProductAvailableColors(
+                                                                v-for="(color, index) in getProductAvailableColors(
                                                                     product.product_stock
                                                                 )"
                                                                 :key="
                                                                     color.color_id
                                                                 "
                                                             >
+                                                                <v-form v-model="colorProductForm[index]">
                                                                 <td>
                                                                     {{
                                                                         color.color_name
@@ -671,6 +678,8 @@
                                                                 >
                                                                     0
                                                                 </td> -->
+                                                                </v-form>
+                                                                
                                                             </tr>
                                                         </tbody>
                                                         <!-- <tfoot>
@@ -795,6 +804,16 @@
         <v-snackbar v-model="registerSnackbar">
             {{ messagge }}
         </v-snackbar>
+        <v-speed-dial fixed bottom right>
+            <template v-slot:activator>
+                <v-btn
+                    class="primary white--text"
+                    fab
+                >
+                    <v-icon>mdi-content-save</v-icon>
+                </v-btn>
+            </template>
+        </v-speed-dial>
     </app-layout>
 </template>
 

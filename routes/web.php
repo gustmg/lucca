@@ -31,4 +31,9 @@ Route::middleware(['auth:sanctum', 'verified'])->resource('/product_sizes', 'App
 Route::middleware(['auth:sanctum', 'verified'])->resource('/inventory_entries', 'App\Http\Controllers\InventoryEntryController');
 Route::middleware(['auth:sanctum', 'verified'])->post('fetchInventoryEntries', 'App\Http\Controllers\InventoryEntryController@fetchInventoryEntries');
 
+Route::middleware(['auth:sanctum', 'verified'])->resource('/inventory_exits', 'App\Http\Controllers\InventoryExitController');
+Route::middleware(['auth:sanctum', 'verified'])->post('fetchInventoryExits', 'App\Http\Controllers\InventoryExitController@fetchInventoryExits');
+
+Route::middleware(['auth:sanctum', 'verified'])->resource('/reports', 'App\Http\Controllers\ReportController');
+
 

@@ -4,7 +4,7 @@
             <v-list dense>
                 <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-list-item link v-bind="attrs" v-on="on">
+                        <v-list-item link v-bind="attrs" v-on="on" href="/dashboard">
                             <v-list-item-icon>
                                 <v-icon color="white">mdi-home</v-icon>
                             </v-list-item-icon>
@@ -58,7 +58,7 @@
 
                 <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-list-item link v-bind="attrs" v-on="on">
+                        <v-list-item link v-bind="attrs" v-on="on" href="/inventory_exits">
                             <v-list-item-icon>
                                 <v-icon color="white">mdi-exit-to-app</v-icon>
                             </v-list-item-icon>
@@ -74,7 +74,7 @@
 
                 <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-list-item link v-bind="attrs" v-on="on">
+                        <v-list-item link v-bind="attrs" v-on="on" href="/reports">
                             <v-list-item-icon>
                                 <v-icon color="white">mdi-chart-bar</v-icon>
                             </v-list-item-icon>

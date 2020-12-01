@@ -23,17 +23,16 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 
 Route::middleware(['auth:sanctum', 'verified'])->resource('/products', 'App\Http\Controllers\ProductController');
 Route::middleware(['auth:sanctum', 'verified'])->post('fetchProducts', 'App\Http\Controllers\ProductController@fetchProducts');
-Route::middleware(['auth:sanctum', 'verified'])->resource('/product_categories', 'App\Http\Controllers\ProductCategoryController');
-Route::middleware(['auth:sanctum', 'verified'])->resource('/product_genders', 'App\Http\Controllers\ProductGenderController');
-Route::middleware(['auth:sanctum', 'verified'])->resource('/product_colors', 'App\Http\Controllers\ProductColorController');
-Route::middleware(['auth:sanctum', 'verified'])->resource('/product_sizes', 'App\Http\Controllers\ProductSizeController');
+Route::middleware(['auth:sanctum', 'verified'])->resource('/categories', 'App\Http\Controllers\CategoryController');
+Route::middleware(['auth:sanctum', 'verified'])->resource('/genders', 'App\Http\Controllers\GenderController');
+Route::middleware(['auth:sanctum', 'verified'])->resource('/colors', 'App\Http\Controllers\ColorController');
+Route::middleware(['auth:sanctum', 'verified'])->resource('/sizes', 'App\Http\Controllers\SizeController');
+Route::middleware(['auth:sanctum', 'verified'])->resource('/brands', 'App\Http\Controllers\BrandController');
 
-Route::middleware(['auth:sanctum', 'verified'])->resource('/inventory_entries', 'App\Http\Controllers\InventoryEntryController');
-Route::middleware(['auth:sanctum', 'verified'])->post('fetchInventoryEntries', 'App\Http\Controllers\InventoryEntryController@fetchInventoryEntries');
+Route::middleware(['auth:sanctum', 'verified'])->resource('/entries', 'App\Http\Controllers\EntryController');
+Route::middleware(['auth:sanctum', 'verified'])->post('fetchEntries', 'App\Http\Controllers\EntryController@fetchEntries');
 
-Route::middleware(['auth:sanctum', 'verified'])->resource('/inventory_exits', 'App\Http\Controllers\InventoryExitController');
-Route::middleware(['auth:sanctum', 'verified'])->post('fetchInventoryExits', 'App\Http\Controllers\InventoryExitController@fetchInventoryExits');
+Route::middleware(['auth:sanctum', 'verified'])->resource('/inventory_exits', 'App\Http\Controllers\ExitController');
+Route::middleware(['auth:sanctum', 'verified'])->post('fetchExits', 'App\Http\Controllers\ExitController@fetchExits');
 
 Route::middleware(['auth:sanctum', 'verified'])->resource('/reports', 'App\Http\Controllers\ReportController');
-
-

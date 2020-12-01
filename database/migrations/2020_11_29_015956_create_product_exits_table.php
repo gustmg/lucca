@@ -14,17 +14,17 @@ class CreateProductExitsTable extends Migration
     public function up()
     {
         Schema::create('product_exits', function (Blueprint $table) {
-            $table->unsignedBigInteger('inventory_exit_id');
+            $table->unsignedBigInteger('exit_id');
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('product_color_id');
-            $table->unsignedBigInteger('product_size_id');
+            $table->unsignedBigInteger('color_id');
+            $table->unsignedBigInteger('size_id');
             $table->integer('product_exit_amount');
             $table->timestamps();
 
-            $table->foreign('inventory_exit_id')->references('inventory_exit_id')->on('inventory_exits');
+            $table->foreign('exit_id')->references('exit_id')->on('exits');
             $table->foreign('product_id')->references('product_id')->on('products');
-            $table->foreign('product_color_id')->references('product_color_id')->on('product_colors');
-            $table->foreign('product_size_id')->references('product_size_id')->on('product_sizes');
+            $table->foreign('color_id')->references('color_id')->on('colors');
+            $table->foreign('size_id')->references('size_id')->on('sizes');
         });
     }
 

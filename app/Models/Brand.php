@@ -9,4 +9,13 @@ class Brand extends Model
 {
     use HasFactory;
     protected $primaryKey = 'brand_id';
+    protected $with = ['brand_categories'];
+
+    public function brand_categories() {
+        return $this->hasMany('App\Models\Category', 'category_brand_id');
+    }
+
+    public function brand_products() {
+        return $this->hasMany('App\Models\Product', 'product_brand_id');
+    }
 }

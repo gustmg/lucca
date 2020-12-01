@@ -14,18 +14,18 @@ class CreateProductEntriesTable extends Migration
     public function up()
     {
         Schema::create('product_entries', function (Blueprint $table) {
-            $table->unsignedBigInteger('inventory_entry_id');
+            $table->unsignedBigInteger('entry_id');
             $table->unsignedBigInteger('product_id');
-            $table->unsignedBigInteger('product_color_id');
-            $table->unsignedBigInteger('product_size_id');
+            $table->unsignedBigInteger('color_id');
+            $table->unsignedBigInteger('size_id');
             $table->integer('product_entry_amount');
-            $table->integer('product_unit_cost');
+            $table->decimal('product_unit_cost', 8, 2);
             $table->timestamps();
 
-            $table->foreign('inventory_entry_id')->references('inventory_entry_id')->on('inventory_entries');
+            $table->foreign('entry_id')->references('entry_id')->on('entries');
             $table->foreign('product_id')->references('product_id')->on('products');
-            $table->foreign('product_color_id')->references('product_color_id')->on('product_colors');
-            $table->foreign('product_size_id')->references('product_size_id')->on('product_sizes');
+            $table->foreign('color_id')->references('color_id')->on('colors');
+            $table->foreign('size_id')->references('size_id')->on('sizes');
         });
     }
 

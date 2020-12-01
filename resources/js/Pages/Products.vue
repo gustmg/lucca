@@ -8,14 +8,13 @@
                 <v-col cols="2">
                     <div class="text-title-1">Marcas</div>
                     <v-checkbox
-                        class="mb-0 py-0"
-                        v-model="showLuccaSportProducts"
-                        label="Lucca Sport"
-                    ></v-checkbox>
-                    <v-checkbox
-                        class="my-0 py-0"
-                        v-model="showX10Products"
-                        label="X10"
+                        v-for="brand in brands"
+                        :key="brand.brand_id"
+                        class="mt-1"
+                        dense
+                        :value="brand.brand_id"
+                        v-model="showBrands"
+                        :label="brand.brand_name"
                     ></v-checkbox>
                 </v-col>
                 <v-col cols="4" offset-md="6" align="right">
@@ -31,42 +30,43 @@
                 color="white"
                 elevation="1"
                 class="px-8"
-                v-show="showLuccaSportProducts"
+                v-for="(brand, index) in brands"
+                :key="brand.brand_id"
+                v-show="showBrands.includes(brand.brand_id)"
             >
                 <v-row>
                     <v-col cols="12">
-                        <h6 class="text-h6 pb-4">Lucca Sport</h6>
+                        <h6 class="text-h6 pb-4">{{ brand.brand_name }}</h6>
                         <v-row>
                             <v-col cols="3">
                                 <v-select
-                                    v-model="luccaSelectedCategory"
+                                    v-model="brandSelectedCategory[index]"
                                     solo
+                                    dense
+                                    clearable
                                     label="Categoría"
-                                    :items="luccaSportCategories"
-                                    item-text="product_category_name"
-                                    item-value="product_category_id"
+                                    :items="brand.brand_categories"
+                                    item-text="category_name"
+                                    item-value="category_id"
                                 ></v-select>
                             </v-col>
-                            <v-col cols="3">
+                            <v-col cols="3" v-show="brand.brand_id == 1">
                                 <v-select
-                                    v-model="luccaSelectedGender"
+                                    v-model="selectedGender"
                                     solo
+                                    dense
+                                    clearable
                                     label="Género"
-                                    :items="productGenders"
-                                    item-text="product_gender_name"
-                                    item-value="product_gender_id"
+                                    :items="genders"
+                                    item-text="gender_name"
+                                    item-value="gender_id"
                                 ></v-select>
                             </v-col>
                         </v-row>
                         <v-expansion-panels>
-                            <v-expansion-panel
-                                v-for="product in luccaSportProducts"
-                                :key="product.product_id"
-                            >
+                            <v-expansion-panel v-for="product in brand.brand_products" :key="product.product_id">
                                 <v-expansion-panel-header>
-                                    {{
-                                        product.product_model
-                                    }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
+                                    {{ product.product_model }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
                                         product.product_description
                                     }}
                                 </v-expansion-panel-header>
@@ -75,22 +75,11 @@
                                         <v-row>
                                             <v-col cols="3">
                                                 Categoría:
-                                                {{
-                                                    product.product_category
-                                                        .product_category_name
-                                                }}
+                                                {{ product.category.category_name }}
                                             </v-col>
                                             <v-col cols="3">
                                                 Genero:
-                                                {{
-                                                    product.product_gender
-                                                        .product_gender_name
-                                                }}
-                                            </v-col>
-                                            <v-col cols="3">
-                                                Costo por pieza: ${{
-                                                    product.product_cost
-                                                }}
+                                                {{ product.product_gender.product_gender_name }}
                                             </v-col>
                                             <v-col cols="3">
                                                 Stock: 0
@@ -101,49 +90,29 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>Color</th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
+                                                                <th class="text-center">
                                                                     XCH
                                                                 </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
+                                                                <th class="text-center">
                                                                     CH
                                                                 </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
+                                                                <th class="text-center">
                                                                     M
                                                                 </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
+                                                                <th class="text-center">
                                                                     G
                                                                 </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
+                                                                <th class="text-center">
                                                                     XG
                                                                 </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
+                                                                <th class="text-center">
                                                                     XXG
                                                                 </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
+                                                                <th class="text-center">
                                                                     XXXG
                                                                 </th>
-                                                                <th
-                                                                    class="text-center primary--text"
-                                                                >
-                                                                    <b
-                                                                        >Total
-                                                                        por
-                                                                        color</b
-                                                                    >
+                                                                <th class="text-center primary--text">
+                                                                    <b>Total por color</b>
                                                                 </th>
                                                             </tr>
                                                         </thead>
@@ -152,18 +121,12 @@
                                                                 v-for="color in getProductAvailableColors(
                                                                     product.product_stock
                                                                 )"
-                                                                :key="
-                                                                    color.color_id
-                                                                "
+                                                                :key="color.color_id"
                                                             >
                                                                 <td>
-                                                                    {{
-                                                                        color.color_name
-                                                                    }}
+                                                                    {{ color.color_name }}
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     {{
                                                                         getStockByColorSize(
                                                                             product.product_stock,
@@ -172,9 +135,7 @@
                                                                         )
                                                                     }}
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     {{
                                                                         getStockByColorSize(
                                                                             product.product_stock,
@@ -183,9 +144,7 @@
                                                                         )
                                                                     }}
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     {{
                                                                         getStockByColorSize(
                                                                             product.product_stock,
@@ -194,9 +153,7 @@
                                                                         )
                                                                     }}
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     {{
                                                                         getStockByColorSize(
                                                                             product.product_stock,
@@ -205,9 +162,7 @@
                                                                         )
                                                                     }}
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     {{
                                                                         getStockByColorSize(
                                                                             product.product_stock,
@@ -216,9 +171,7 @@
                                                                         )
                                                                     }}
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     {{
                                                                         getStockByColorSize(
                                                                             product.product_stock,
@@ -227,9 +180,7 @@
                                                                         )
                                                                     }}
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     {{
                                                                         getStockByColorSize(
                                                                             product.product_stock,
@@ -238,9 +189,7 @@
                                                                         )
                                                                     }}
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     0
                                                                 </td>
                                                             </tr>
@@ -248,304 +197,27 @@
                                                         <tfoot>
                                                             <tr>
                                                                 <td>
-                                                                    <b
-                                                                        >Total
-                                                                        por
-                                                                        talla</b
-                                                                    >
+                                                                    <b>Total por talla</b>
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     0
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     0
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     0
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     0
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     0
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     0
                                                                 </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    0
-                                                                </td>
-                                                            </tr>
-                                                        </tfoot>
-                                                    </template>
-                                                </v-simple-table>
-                                            </v-col>
-                                        </v-row>
-                                    </v-container>
-                                </v-expansion-panel-content>
-                            </v-expansion-panel>
-                        </v-expansion-panels>
-                    </v-col>
-                </v-row>
-            </v-sheet>
-            <br />
-            <v-sheet
-                color="white"
-                elevation="1"
-                class="px-8"
-                v-show="showX10Products"
-            >
-                <v-row>
-                    <v-col cols="12">
-                        <h6 class="text-h6 pb-4">X10</h6>
-                        <v-row>
-                            <v-col cols="3">
-                                <v-select
-                                    v-model="x10SelectedCategory"
-                                    solo
-                                    label="Categoría"
-                                    :items="x10Categories"
-                                    item-text="product_category_name"
-                                    item-value="product_category_id"
-                                ></v-select>
-                            </v-col>
-                        </v-row>
-                        <v-expansion-panels>
-                            <v-expansion-panel
-                                v-for="product in x10Products"
-                                :key="product.product_id"
-                            >
-                                <v-expansion-panel-header>
-                                    {{
-                                        product.product_model
-                                    }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
-                                        product.product_description
-                                    }}
-                                </v-expansion-panel-header>
-                                <v-expansion-panel-content>
-                                    <v-container>
-                                        <v-row>
-                                            <v-col cols="3">
-                                                Categoría:
-                                                {{
-                                                    product.product_category
-                                                        .product_category_name
-                                                }}
-                                            </v-col>
-                                            <v-col cols="3">
-                                                Costo por pieza: ${{
-                                                    product.product_cost
-                                                }}
-                                            </v-col>
-                                            <v-col cols="3">
-                                                Stock: 0
-                                            </v-col>
-                                            <v-col cols="12">
-                                                <v-simple-table>
-                                                    <template v-slot:default>
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Color</th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
-                                                                    XCH
-                                                                </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
-                                                                    CH
-                                                                </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
-                                                                    M
-                                                                </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
-                                                                    G
-                                                                </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
-                                                                    XG
-                                                                </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
-                                                                    XXG
-                                                                </th>
-                                                                <th
-                                                                    class="text-center"
-                                                                >
-                                                                    XXXG
-                                                                </th>
-                                                                <th
-                                                                    class="text-center primary--text"
-                                                                >
-                                                                    <b
-                                                                        >Total
-                                                                        por
-                                                                        color</b
-                                                                    >
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr
-                                                                v-for="color in getProductAvailableColors(
-                                                                    product.product_stock
-                                                                )"
-                                                                :key="
-                                                                    color.color_id
-                                                                "
-                                                            >
-                                                                <td>
-                                                                    {{
-                                                                        color.color_name
-                                                                    }}
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            1
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            2
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            3
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            4
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            5
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            6
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            7
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    0
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                        <tfoot>
-                                                            <tr>
-                                                                <td>
-                                                                    <b
-                                                                        >Total
-                                                                        por
-                                                                        talla</b
-                                                                    >
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    0
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    0
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    0
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    0
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    0
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
-                                                                    0
-                                                                </td>
-                                                                <td
-                                                                    class="text-center"
-                                                                >
+                                                                <td class="text-center">
                                                                     0
                                                                 </td>
                                                             </tr>
@@ -573,181 +245,167 @@
 </template>
 
 <script>
-import AppLayout from "@/Layouts/AppLayout";
+    import AppLayout from '@/Layouts/AppLayout'
 
-export default {
-    components: {
-        AppLayout
-    },
-
-    mounted() {
-        this.fetchProducts();
-        this.fetchProductCategories();
-        this.fetchProductGenders();
-    },
-
-    data() {
-        return {
-            products: [],
-            productStock: [],
-            productCategories: [],
-            productGenders: [],
-            showLuccaSportProducts: true,
-            showX10Products: true,
-            luccaSelectedCategory: 1,
-            luccaSelectedGender: 1,
-            x10SelectedCategory: 1,
-            searchProductValue: ""
-        };
-    },
-
-    computed: {
-        filteredProducts: function() {
-            return this.products.filter(product => {
-                return (
-                    product.product_description
-                        .toLowerCase()
-                        .indexOf(this.searchProductValue.toLowerCase()) >= 0 ||
-                    product.product_model
-                        .toLowerCase()
-                        .indexOf(this.searchProductValue.toLowerCase()) >= 0
-                );
-            });
+    export default {
+        components: {
+            AppLayout,
         },
 
-        luccaSportCategories: function() {
-            return this.productCategories.filter(
-                productCategory => productCategory.product_category_id < 5
-            );
+        mounted() {
+            this.fetchProducts()
+            this.fetchCategories()
+            this.fetchGenders()
+            this.fetchBrands()
         },
 
-        luccaSportProducts: function() {
-            if (this.luccaSelectedCategory == 1) {
-                if (this.luccaSelectedGender == 1) {
-                    return this.filteredProducts.filter(
-                        product => product.product_brand_id == 1
-                    );
-                } else {
-                    return this.filteredProducts.filter(
-                        product =>
-                            product.product_brand_id == 1 &&
-                            product.product_gender_id ==
-                                this.luccaSelectedGender
-                    );
-                }
-            } else {
-                if (this.luccaSelectedGender == 1) {
-                    return this.filteredProducts.filter(
-                        product =>
-                            product.product_brand_id == 1 &&
-                            product.product_category_id ==
-                                this.luccaSelectedCategory
-                    );
-                } else {
-                    return this.filteredProducts.filter(
-                        product =>
-                            product.product_brand_id == 1 &&
-                            product.product_category_id ==
-                                this.luccaSelectedCategory &&
-                            product.product_gender_id ==
-                                this.luccaSelectedGender
-                    );
-                }
+        data() {
+            return {
+                products: [],
+                showBrands: [0],
+                brandSelectedCategory: [0, 0],
+                brands: [],
+                categories: [],
+                genders: [],
+                selectedGender: 0,
+                searchProductValue: '',
             }
         },
 
-        x10Categories: function() {
-            return this.productCategories.filter(
-                productCategory =>
-                    productCategory.product_category_id > 4 ||
-                    productCategory.product_category_id == 1
-            );
-        },
-
-        x10Products: function() {
-            if (this.x10SelectedCategory == 1) {
-                return this.filteredProducts.filter(
-                    product => product.product_brand_id == 2
-                );
-            } else {
-                return this.filteredProducts.filter(
-                    product =>
-                        product.product_brand_id == 2 &&
-                        product.product_category_id == this.x10SelectedCategory
-                );
-            }
-        }
-    },
-
-    methods: {
-        fetchProducts: function() {
-            axios
-                .post("fetchProducts")
-                .then(response => {
-                    this.products = response.data.products;
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        },
-
-        fetchProductCategories: function() {
-            axios
-                .get("product_categories")
-                .then(response => {
-                    this.productCategories = response.data.product_categories;
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        },
-
-        fetchProductGenders: function() {
-            axios
-                .get("product_genders")
-                .then(response => {
-                    this.productGenders = response.data.product_genders;
-                })
-                .catch(function(error) {
-                    console.log(error);
-                });
-        },
-
-        getProductAvailableColors: function(product_stock) {
-            var availableColors = [];
-
-            product_stock.forEach(product => {
-                if (
-                    !availableColors.some(
-                        color =>
-                            color.color_id ===
-                            product.product_color.product_color_id
+        computed: {
+            filteredProducts: function() {
+                return this.products.filter(product => {
+                    return (
+                        product.product_description.toLowerCase().indexOf(this.searchProductValue.toLowerCase()) >= 0 ||
+                        product.product_model.toLowerCase().indexOf(this.searchProductValue.toLowerCase()) >= 0
                     )
-                ) {
-                    availableColors.push({
-                        color_id: product.product_color.product_color_id,
-                        color_name: product.product_color.product_color_name
-                    });
-                }
-            });
+                })
+            },
 
-            return availableColors;
+            luccaSportProducts: function() {
+                if (this.luccaSelectedCategory == 1) {
+                    if (this.luccaSelectedGender == 1) {
+                        return this.filteredProducts.filter(product => product.product_brand_id == 1)
+                    } else {
+                        return this.filteredProducts.filter(
+                            product =>
+                                product.product_brand_id == 1 && product.product_gender_id == this.luccaSelectedGender
+                        )
+                    }
+                } else {
+                    if (this.luccaSelectedGender == 1) {
+                        return this.filteredProducts.filter(
+                            product =>
+                                product.product_brand_id == 1 &&
+                                product.product_category_id == this.luccaSelectedCategory
+                        )
+                    } else {
+                        return this.filteredProducts.filter(
+                            product =>
+                                product.product_brand_id == 1 &&
+                                product.product_category_id == this.luccaSelectedCategory &&
+                                product.product_gender_id == this.luccaSelectedGender
+                        )
+                    }
+                }
+            },
+
+            x10Categories: function() {
+                return this.categories.filter(category => category.category_id > 4 || category.category_id == 1)
+            },
+
+            x10Products: function() {
+                if (this.x10SelectedCategory == 1) {
+                    return this.filteredProducts.filter(product => product.product_brand_id == 2)
+                } else {
+                    return this.filteredProducts.filter(
+                        product =>
+                            product.product_brand_id == 2 && product.product_category_id == this.x10SelectedCategory
+                    )
+                }
+            },
         },
 
-        getStockByColorSize: function(product_stock, color_id, size) {
-            var stock = "NA";
+        methods: {
+            fetchProducts: function() {
+                axios
+                    .post('fetchProducts')
+                    .then(response => {
+                        this.products = response.data.products
+                    })
+                    .catch(function(error) {
+                        console.log(error)
+                    })
+            },
 
-            product_stock.forEach(product => {
-                if (
-                    product.product_size_id == size &&
-                    product.product_color_id == color_id
-                ) {
-                    stock = product.product_stock;
-                }
-            });
+            fetchBrands: function() {
+                axios
+                    .get('brands')
+                    .then(response => {
+                        this.brands = response.data.brands
+                    })
+                    .catch(function(error) {
+                        console.log(error)
+                    })
+            },
 
-            return stock;
-        }
+            fetchCategories: function() {
+                axios
+                    .get('categories')
+                    .then(response => {
+                        this.categories = response.data.categories
+                    })
+                    .catch(function(error) {
+                        console.log(error)
+                    })
+            },
+
+            fetchGenders: function() {
+                axios
+                    .get('genders')
+                    .then(response => {
+                        this.genders = response.data.genders
+                    })
+                    .catch(function(error) {
+                        console.log(error)
+                    })
+            },
+
+            // getProductAvailableColors: function(product_stock) {
+            //     var availableColors = [];
+
+            //     product_stock.forEach(product => {
+            //         if (
+            //             !availableColors.some(
+            //                 color =>
+            //                     color.color_id ===
+            //                     product.product_color.product_color_id
+            //             )
+            //         ) {
+            //             availableColors.push({
+            //                 color_id: product.product_color.product_color_id,
+            //                 color_name: product.product_color.product_color_name
+            //             });
+            //         }
+            //     });
+
+            //     return availableColors;
+            // },
+
+            // getStockByColorSize: function(product_stock, color_id, size) {
+            //     var stock = "NA";
+
+            //     product_stock.forEach(product => {
+            //         if (
+            //             product.product_size_id == size &&
+            //             product.product_color_id == color_id
+            //         ) {
+            //             stock = product.product_stock;
+            //         }
+            //     });
+
+            //     return stock;
+            // }
+        },
     }
-};
 </script>

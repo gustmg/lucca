@@ -79,7 +79,7 @@
                                             </v-col>
                                             <v-col cols="3">
                                                 Genero:
-                                                {{ product.product_gender.product_gender_name }}
+                                                {{ product.gender.gender_name }}
                                             </v-col>
                                             <v-col cols="3">
                                                 Stock: 0
@@ -90,26 +90,12 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>Color</th>
-                                                                <th class="text-center">
-                                                                    XCH
-                                                                </th>
-                                                                <th class="text-center">
-                                                                    CH
-                                                                </th>
-                                                                <th class="text-center">
-                                                                    M
-                                                                </th>
-                                                                <th class="text-center">
-                                                                    G
-                                                                </th>
-                                                                <th class="text-center">
-                                                                    XG
-                                                                </th>
-                                                                <th class="text-center">
-                                                                    XXG
-                                                                </th>
-                                                                <th class="text-center">
-                                                                    XXXG
+                                                                <th
+                                                                    class="text-center"
+                                                                    v-for="size in sizes"
+                                                                    :key="size.size_id"
+                                                                >
+                                                                    {{ size.size_short_name }}
                                                                 </th>
                                                                 <th class="text-center primary--text">
                                                                     <b>Total por color</b>
@@ -117,6 +103,16 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+                                                            <tr
+                                                                v-for="color in product.product_colors"
+                                                                :key="color.color_id"
+                                                            >
+                                                                {{
+                                                                    color.color_name
+                                                                }}
+                                                            </tr>
+                                                        </tbody>
+                                                        <!-- <tbody>
                                                             <tr
                                                                 v-for="color in getProductAvailableColors(
                                                                     product.product_stock
@@ -193,7 +189,7 @@
                                                                     0
                                                                 </td>
                                                             </tr>
-                                                        </tbody>
+                                                        </tbody> -->
                                                         <tfoot>
                                                             <tr>
                                                                 <td>
@@ -257,6 +253,8 @@
             this.fetchCategories()
             this.fetchGenders()
             this.fetchBrands()
+            this.fetchSizes()
+            this.fetchColors()
         },
 
         data() {
@@ -267,6 +265,7 @@
                 brands: [],
                 categories: [],
                 genders: [],
+                sizes: [],
                 selectedGender: 0,
                 searchProductValue: '',
             }
@@ -280,49 +279,6 @@
                         product.product_model.toLowerCase().indexOf(this.searchProductValue.toLowerCase()) >= 0
                     )
                 })
-            },
-
-            luccaSportProducts: function() {
-                if (this.luccaSelectedCategory == 1) {
-                    if (this.luccaSelectedGender == 1) {
-                        return this.filteredProducts.filter(product => product.product_brand_id == 1)
-                    } else {
-                        return this.filteredProducts.filter(
-                            product =>
-                                product.product_brand_id == 1 && product.product_gender_id == this.luccaSelectedGender
-                        )
-                    }
-                } else {
-                    if (this.luccaSelectedGender == 1) {
-                        return this.filteredProducts.filter(
-                            product =>
-                                product.product_brand_id == 1 &&
-                                product.product_category_id == this.luccaSelectedCategory
-                        )
-                    } else {
-                        return this.filteredProducts.filter(
-                            product =>
-                                product.product_brand_id == 1 &&
-                                product.product_category_id == this.luccaSelectedCategory &&
-                                product.product_gender_id == this.luccaSelectedGender
-                        )
-                    }
-                }
-            },
-
-            x10Categories: function() {
-                return this.categories.filter(category => category.category_id > 4 || category.category_id == 1)
-            },
-
-            x10Products: function() {
-                if (this.x10SelectedCategory == 1) {
-                    return this.filteredProducts.filter(product => product.product_brand_id == 2)
-                } else {
-                    return this.filteredProducts.filter(
-                        product =>
-                            product.product_brand_id == 2 && product.product_category_id == this.x10SelectedCategory
-                    )
-                }
             },
         },
 
@@ -365,6 +321,28 @@
                     .get('genders')
                     .then(response => {
                         this.genders = response.data.genders
+                    })
+                    .catch(function(error) {
+                        console.log(error)
+                    })
+            },
+
+            fetchSizes: function() {
+                axios
+                    .get('/sizes')
+                    .then(response => {
+                        this.sizes = response.data.sizes
+                    })
+                    .catch(function(error) {
+                        console.log(error)
+                    })
+            },
+
+            fetchColors: function() {
+                axios
+                    .get('/colors')
+                    .then(response => {
+                        this.colors = response.data.colors
                     })
                     .catch(function(error) {
                         console.log(error)

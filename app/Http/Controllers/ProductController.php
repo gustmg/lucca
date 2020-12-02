@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia;
 use Auth;
 use App\Models\Product;
+use App\Models\ProductStock;
 
 class ProductController extends Controller
 {
@@ -56,15 +57,26 @@ class ProductController extends Controller
         $product->save();
 
         
-        // foreach ($request->product_available_colors as $key => $color_id) {
-        //     foreach ($request->product_available_sizes as $key => $size_id) {
-        //         $product_stock = new ProductStock;
-        //         $product_stock->product_id=$product->product_id;
-        //         $product_stock->product_color_id=$color_id;
-        //         $product_stock->product_size_id=$size_id;
-        //         $product_stock->save();
-        //     }
-        // }
+        foreach ($request->product_colors as $key => $color_id) {
+            $product->product_colors()->attach($color_id);
+        }
+
+        foreach ($request->product_sizes as $key => $size_id) {
+            $product->product_sizes()->attach($size_id);
+        }
+
+        foreach ($request->product_colors as $key => $color_id) {
+            foreach ($request->product_sizes as $key => $size_id) {
+                $product_stock=new ProductStock;
+                $product_stock->product_id=$product->product_id;
+                $product_stock->color_id=$color_id;
+                $product_stock->size_id=$size_id;
+                $product_stock->save();
+            }
+        }
+        
+
+
 
         return response()->json([
             "messagge" => "Producto registrado correctamente. Redireccionando...",

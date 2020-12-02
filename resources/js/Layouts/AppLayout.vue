@@ -18,12 +18,7 @@
 
                 <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-list-item
-                            link
-                            v-bind="attrs"
-                            v-on="on"
-                            href="/products"
-                        >
+                        <v-list-item link v-bind="attrs" v-on="on" href="/products">
                             <v-list-item-icon>
                                 <v-icon color="white">mdi-hanger</v-icon>
                             </v-list-item-icon>
@@ -37,19 +32,12 @@
 
                 <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-list-item
-                            link
-                            v-bind="attrs"
-                            v-on="on"
-                            href="/inventory_entries"
-                        >
+                        <v-list-item link v-bind="attrs" v-on="on" href="/entries">
                             <v-list-item-icon>
                                 <v-icon color="white">mdi-warehouse</v-icon>
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title
-                                    >Entradas de inventario</v-list-item-title
-                                >
+                                <v-list-item-title>Entradas de inventario</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                     </template>
@@ -58,14 +46,12 @@
 
                 <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
-                        <v-list-item link v-bind="attrs" v-on="on" href="/inventory_exits">
+                        <v-list-item link v-bind="attrs" v-on="on" href="/exits">
                             <v-list-item-icon>
                                 <v-icon color="white">mdi-exit-to-app</v-icon>
                             </v-list-item-icon>
                             <v-list-item-content>
-                                <v-list-item-title
-                                    >Salidas de inventario</v-list-item-title
-                                >
+                                <v-list-item-title>Salidas de inventario</v-list-item-title>
                             </v-list-item-content>
                         </v-list-item>
                     </template>
@@ -90,19 +76,12 @@
                 <v-list dense>
                     <v-tooltip right>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-list-item
-                                link
-                                v-bind="attrs"
-                                v-on="on"
-                                v-on:click="logout"
-                            >
+                            <v-list-item link v-bind="attrs" v-on="on" v-on:click="logout">
                                 <v-list-item-icon>
                                     <v-icon color="white">mdi-logout</v-icon>
                                 </v-list-item-icon>
                                 <v-list-item-content>
-                                    <v-list-item-title
-                                        >Cerrar sesión</v-list-item-title
-                                    >
+                                    <v-list-item-title>Cerrar sesión</v-list-item-title>
                                 </v-list-item-content>
                             </v-list-item>
                         </template>
@@ -118,13 +97,13 @@
 </template>
 
 <script>
-export default {
-    methods: {
-        logout() {
-            axios.post(route("logout").url()).then(response => {
-                window.location = "/";
-            });
-        }
+    export default {
+        methods: {
+            logout() {
+                axios.post(route('logout').url()).then(response => {
+                    window.location = '/'
+                })
+            },
+        },
     }
-};
 </script>

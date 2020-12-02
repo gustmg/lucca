@@ -90,15 +90,13 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>Color</th>
+                                                                <th></th>
                                                                 <th
                                                                     class="text-center"
                                                                     v-for="size in sizes"
                                                                     :key="size.size_id"
                                                                 >
                                                                     {{ size.size_short_name }}
-                                                                </th>
-                                                                <th class="text-center primary--text">
-                                                                    <b>Total por color</b>
                                                                 </th>
                                                             </tr>
                                                         </thead>
@@ -107,117 +105,41 @@
                                                                 v-for="color in product.product_colors"
                                                                 :key="color.color_id"
                                                             >
-                                                                {{
-                                                                    color.color_name
-                                                                }}
+                                                                <td>{{ color.color_name }}</td>
+                                                                <td>
+                                                                    <v-icon>mdi-package-variant</v-icon>
+                                                                    <v-icon>mdi-currency-usd</v-icon>
+                                                                </td>
+                                                                <td v-for="size in sizes" :key="size.size_id">
+                                                                    <v-text-field
+                                                                        readonly
+                                                                        solo
+                                                                        :value="
+                                                                            getProductAmount(
+                                                                                product.product_stock,
+                                                                                product.product_id,
+                                                                                color.color_id,
+                                                                                size.size_id
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                    </v-text-field>
+                                                                    <v-text-field
+                                                                        readonly
+                                                                        solo
+                                                                        :value="
+                                                                            getAverageCost(
+                                                                                product.product_stock,
+                                                                                product.product_id,
+                                                                                color.color_id,
+                                                                                size.size_id
+                                                                            )
+                                                                        "
+                                                                    >
+                                                                    </v-text-field>
+                                                                </td>
                                                             </tr>
                                                         </tbody>
-                                                        <!-- <tbody>
-                                                            <tr
-                                                                v-for="color in getProductAvailableColors(
-                                                                    product.product_stock
-                                                                )"
-                                                                :key="color.color_id"
-                                                            >
-                                                                <td>
-                                                                    {{ color.color_name }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            1
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            2
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            3
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            4
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            5
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            6
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    {{
-                                                                        getStockByColorSize(
-                                                                            product.product_stock,
-                                                                            color.color_id,
-                                                                            7
-                                                                        )
-                                                                    }}
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    0
-                                                                </td>
-                                                            </tr>
-                                                        </tbody> -->
-                                                        <tfoot>
-                                                            <tr>
-                                                                <td>
-                                                                    <b>Total por talla</b>
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    0
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    0
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    0
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    0
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    0
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    0
-                                                                </td>
-                                                                <td class="text-center">
-                                                                    0
-                                                                </td>
-                                                            </tr>
-                                                        </tfoot>
                                                     </template>
                                                 </v-simple-table>
                                             </v-col>
@@ -349,41 +271,28 @@
                     })
             },
 
-            // getProductAvailableColors: function(product_stock) {
-            //     var availableColors = [];
+            getProductAmount(product_stock, product_id, color_id, size_id) {
+                var result = product_stock.filter(function(stock, index) {
+                    return stock.product_id == product_id && stock.color_id == color_id && stock.size_id == size_id
+                })
 
-            //     product_stock.forEach(product => {
-            //         if (
-            //             !availableColors.some(
-            //                 color =>
-            //                     color.color_id ===
-            //                     product.product_color.product_color_id
-            //             )
-            //         ) {
-            //             availableColors.push({
-            //                 color_id: product.product_color.product_color_id,
-            //                 color_name: product.product_color.product_color_name
-            //             });
-            //         }
-            //     });
+                if (result.length > 0) {
+                    return result[0].product_amount
+                } else {
+                    return 'N/A'
+                }
+            },
 
-            //     return availableColors;
-            // },
-
-            // getStockByColorSize: function(product_stock, color_id, size) {
-            //     var stock = "NA";
-
-            //     product_stock.forEach(product => {
-            //         if (
-            //             product.product_size_id == size &&
-            //             product.product_color_id == color_id
-            //         ) {
-            //             stock = product.product_stock;
-            //         }
-            //     });
-
-            //     return stock;
-            // }
+            getAverageCost(product_stock, product_id, color_id, size_id) {
+                var result = product_stock.filter(function(stock, index) {
+                    return stock.product_id == product_id && stock.color_id == color_id && stock.size_id == size_id
+                })
+                if (result.length > 0) {
+                    return result[0].product_average_cost
+                } else {
+                    return 'N/A'
+                }
+            },
         },
     }
 </script>

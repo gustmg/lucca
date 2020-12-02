@@ -9,7 +9,7 @@ class Product extends Model
 {
     use HasFactory;
     protected $primaryKey = 'product_id';
-    protected $with = ['category', 'gender', 'product_colors'];
+    protected $with = ['category', 'gender', 'product_colors', 'product_sizes', 'product_stock'];
 
     public function category() {
         return $this->belongsTo('App\Models\Category', 'product_category_id');
@@ -19,9 +19,15 @@ class Product extends Model
         return $this->belongsTo('App\Models\Gender', 'product_gender_id');
     }
 
-
-    //TODO : Create product_color table relation
     public function product_colors() {
-        return $this->hasMany('App\Models\Color');
+        return $this->belongsToMany('App\Models\Color', 'product_colors', 'product_id', 'color_id');
+    }
+
+    public function product_sizes() {
+        return $this->belongsToMany('App\Models\Size', 'product_sizes', 'product_id', 'size_id');
+    }
+
+    public function product_stock() {
+        return $this->hasMany('App\Models\ProductStock', 'product_id');
     }
 }

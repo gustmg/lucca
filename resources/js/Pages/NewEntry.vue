@@ -2,6 +2,7 @@
     <app-layout>
         <v-container>
             <v-row>
+                <v-col cols="12">Entrada de inventario #{{ entry_id }}</v-col>
                 <v-col cols="12">
                     <v-stepper v-model="newEntryStepper">
                         <v-stepper-header>
@@ -161,13 +162,6 @@
                                                                                                     v-for="size in sizes"
                                                                                                     :key="size.size_id"
                                                                                                 >
-                                                                                                    <v-form
-                                                                                                        v-model="
-                                                                                                            entryForm[
-                                                                                                                index
-                                                                                                            ]
-                                                                                                        "
-                                                                                                    ></v-form>
                                                                                                     <v-text-field
                                                                                                         @change="
                                                                                                             setProductAmount(
@@ -178,9 +172,6 @@
                                                                                                             )
                                                                                                         "
                                                                                                         type="number"
-                                                                                                        :rules="[
-                                                                                                            rules.required,
-                                                                                                        ]"
                                                                                                         min="0"
                                                                                                         step="1"
                                                                                                         solo
@@ -192,7 +183,14 @@
                                                                                                                 size.size_id
                                                                                                             )
                                                                                                         "
-                                                                                                        value="0"
+                                                                                                        :value="
+                                                                                                            getProductAmount(
+                                                                                                                product.product_id,
+                                                                                                                color.color_id,
+                                                                                                                size.size_id
+                                                                                                            )
+                                                                                                        "
+                                                                                                        placeholder="0"
                                                                                                     >
                                                                                                     </v-text-field>
                                                                                                     <v-text-field
@@ -236,7 +234,6 @@
                                                                 </v-expansion-panel-content>
                                                             </v-expansion-panel>
                                                         </v-expansion-panels>
-
                                                         <v-dialog v-model="productsListDialog" width="500">
                                                             <template v-slot:activator="{ on, attrs }">
                                                                 <v-speed-dial v-bind="attrs" v-on="on">
@@ -256,7 +253,6 @@
                                                                 <v-card-title>
                                                                     Elige productos
                                                                 </v-card-title>
-
                                                                 <v-card-text>
                                                                     <v-text-field
                                                                         solo
@@ -314,7 +310,7 @@
         </v-container>
         <v-speed-dial fixed bottom right v-show="isValidEntry">
             <template v-slot:activator>
-                <v-btn class="primary white--text" href="/products/create" fab>
+                <v-btn class="primary white--text" v-on:click="registerEntry" fab>
                     <v-icon>mdi-content-save</v-icon>
                 </v-btn>
             </template>
@@ -340,6 +336,7 @@
 
         props: {
             products: Array,
+            entry_id: Number,
         },
 
         data() {
@@ -377,7 +374,7 @@
             isValidEntry: function() {
                 if (this.entries.length > 0) {
                     var totalEntryStockByProduct = []
-                    const reducer = (accumulator, currentValue) => accumulator + currentValue.product_amount
+                    const reducer = (accumulator, currentValue) => accumulator + currentValue.product_entry_amount
 
                     this.productsList.forEach(product => {
                         var filteredEntriesByProduct = this.entries.filter(entry => {
@@ -386,15 +383,16 @@
 
                         var y = filteredEntriesByProduct.reduce(function(valorAnterior, valorActual) {
                             return {
-                                product_amount:
-                                    parseInt(valorAnterior.product_amount) + parseInt(valorActual.product_amount),
+                                product_entry_amount:
+                                    parseInt(valorAnterior.product_entry_amount) +
+                                    parseInt(valorActual.product_entry_amount),
                             }
                         })
                         totalEntryStockByProduct.push(y)
                     })
 
                     var x = totalEntryStockByProduct.filter(amount => {
-                        return amount.product_amount == 0
+                        return amount.product_entry_amount == 0
                     })
 
                     if (x.length > 0) {
@@ -408,19 +406,29 @@
 
         watch: {
             productsList: function() {
-                this.entries = []
                 this.productsList.forEach(product => {
                     product.product_colors.forEach(color => {
                         product.product_sizes.forEach(size => {
-                            this.entries.push({
-                                product_id: product.product_id,
-                                color_id: color.color_id,
-                                size_id: size.size_id,
-                                product_amount: 0,
-                                product_unit_cost: 0.0,
-                            })
+                            const exists = entry =>
+                                entry.product_id == product.product_id &&
+                                entry.color_id == color.color_id &&
+                                entry.size_id == size.size_id
+                            if (!this.entries.some(exists)) {
+                                this.entries.push({
+                                    entry_id: this.entry_id,
+                                    product_id: product.product_id,
+                                    color_id: color.color_id,
+                                    size_id: size.size_id,
+                                    product_entry_amount: 0,
+                                    product_unit_cost: 0.0,
+                                })
+                            }
                         })
                     })
+                })
+
+                this.entries = this.entries.filter(entry => {
+                    return this.productsList.some(product => product.product_id == entry.product_id)
                 })
             },
         },
@@ -493,7 +501,7 @@
                 })
 
                 if (result.length > 0) {
-                    return result[0].product_amount
+                    return result[0].product_entry_amount
                 } else {
                     return 'N/A'
                 }
@@ -527,11 +535,24 @@
                 })
             },
 
-            setProductAmount: function(product_amount, product_id, color_id, size_id) {
+            setProductAmount: function(product_entry_amount, product_id, color_id, size_id) {
                 var result = this.entries.filter(entry => {
                     return entry.product_id == product_id && entry.color_id == color_id && entry.size_id == size_id
                 })
-                result[0].product_amount = product_amount
+
+                if (product_entry_amount == '') {
+                    result[0].product_entry_amount = 0
+                } else {
+                    result[0].product_entry_amount = product_entry_amount
+                }
+            },
+
+            getProductAmount: function(product_id, color_id, size_id) {
+                var result = this.entries.filter(entry => {
+                    return entry.product_id == product_id && entry.color_id == color_id && entry.size_id == size_id
+                })
+
+                return 0
             },
 
             setProductUnitCost: function(product_unit_cost, product_id, color_id, size_id) {
@@ -556,21 +577,16 @@
                     return entry.product_id == product_id && entry.color_id == color_id && entry.size_id == size_id
                 })
 
-                if (result[0].product_amount == 0) {
+                if (result[0].product_entry_amount == 0) {
                     return true
                 } else return false
             },
 
-            getProductAmountValue: function(product_id, color_id, size_id) {
-                var result = this.entries.filter(entry => {
-                    return entry.product_id == product_id && entry.color_id == color_id && entry.size_id == size_id
-                })
-
-                if (result.length > 0) {
-                    return result[0].product_amount
-                } else {
-                    return 0
-                }
+            registerEntry: function() {
+                axios
+                    .post('/entries', { entry_brand_id: this.selectedBrand.brand_id, entries: this.entries })
+                    .then(response => console.log(response.data.messagge))
+                    .catch(error => console.log(error))
             },
         },
     }

@@ -7,6 +7,8 @@ use Inertia;
 use Auth;
 use App\Models\Product;
 use App\Models\ProductStock;
+use App\Models\ProductColor;
+use App\Models\ProductSize;
 
 class ProductController extends Controller
 {
@@ -74,9 +76,6 @@ class ProductController extends Controller
                 $product_stock->save();
             }
         }
-        
-
-
 
         return response()->json([
             "messagge" => "Producto registrado correctamente. Redireccionando...",
@@ -102,7 +101,10 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product=Product::find($id);
+        return Inertia\Inertia::render('EditProduct', [
+            'product' => $product
+        ]);
     }
 
     /**
@@ -114,7 +116,51 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product=Product::find($id);
+        $product->product_model=$request->product_model;
+        $product->product_description=$request->product_description;
+        $product->product_category_id=$request->product_category_id;
+        $product->product_gender_id=$request->product_gender_id;
+        $product->product_brand_id=$request->product_brand_id;
+        $product->user_id=Auth::user()->id;
+        $product->save();
+
+        $remove_product_colors=ProductColor::where('product_id', $id)->delete();
+        $remove_product_sizes=ProductSize::where('product_id', $id)->delete();
+        
+        foreach ($request->product_colors as $key => $color_id) {
+            $product->product_colors()->attach($color_id);
+        }
+
+        foreach ($request->product_sizes as $key => $size_id) {
+            $product->product_sizes()->attach($size_id);
+        }
+
+        foreach ($request->product_colors as $key => $color_id) {
+            foreach ($request->product_sizes as $key => $size_id) {
+                $search_stock=ProductStock::where('product_id', $id)
+                ->where('color_id', $color_id)
+                ->where('size_id', $size_id)
+                ->get();
+
+                if($search_stock->isEmpty()){
+                    $product_stock=new ProductStock;
+                    $product_stock->product_id=$product->product_id;
+                    $product_stock->color_id=$color_id;
+                    $product_stock->size_id=$size_id;
+                    $product_stock->save();
+                }
+
+            }
+        }
+
+        
+        // TODO: Remove Stock of old sizes and colors
+
+
+        return response()->json([
+            "messagge" => "Producto registrado correctamente. Redireccionando...",
+        ], 200);
     }
 
     /**

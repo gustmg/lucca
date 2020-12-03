@@ -84,6 +84,13 @@
                                             <v-col cols="3">
                                                 Stock: 0
                                             </v-col>
+                                            <v-col cols="3">
+                                                <v-btn
+                                                    class="primary"
+                                                    :href="'/products/' + product.product_id + '/edit'"
+                                                    >Editar producto</v-btn
+                                                >
+                                            </v-col>
                                             <v-col cols="12">
                                                 <v-simple-table>
                                                     <template v-slot:default>

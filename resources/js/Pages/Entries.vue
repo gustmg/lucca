@@ -37,7 +37,6 @@
                                             <v-btn block class="primary mb-4" :href="'/entries/' + entry.entry_id"
                                                 >Ver detalles</v-btn
                                             >
-                                            <v-btn block class="primary">Descargar</v-btn>
                                         </v-col>
                                     </v-row>
                                 </v-container>

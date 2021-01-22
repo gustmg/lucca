@@ -50,33 +50,6 @@
                                                         <h6 class="text-h6 pb-4">
                                                             Productos {{ selectedBrand.brand_name }}
                                                         </h6>
-                                                        <v-row>
-                                                            <v-col cols="3">
-                                                                <v-select
-                                                                    v-model="brandSelectedCategory"
-                                                                    solo
-                                                                    dense
-                                                                    clearable
-                                                                    label="Categoría"
-                                                                    :items="selectedBrand.brand_categories"
-                                                                    item-text="category_name"
-                                                                    item-value="category_id"
-                                                                ></v-select>
-                                                            </v-col>
-                                                            <v-col cols="3" v-show="selectedBrand.brand_id == 1">
-                                                                <v-select
-                                                                    v-model="selectedGender"
-                                                                    solo
-                                                                    dense
-                                                                    clearable
-                                                                    label="Género"
-                                                                    :items="genders"
-                                                                    item-text="gender_name"
-                                                                    item-value="gender_id"
-                                                                ></v-select>
-                                                            </v-col>
-                                                        </v-row>
-
                                                         <v-expansion-panels v-if="productsList.length > 0">
                                                             <v-expansion-panel
                                                                 v-for="product in productsList"
@@ -523,7 +496,7 @@
             registerEntry: function() {
                 axios
                     .post('/inventory_exits', { exit_brand_id: this.selectedBrand.brand_id, exits: this.exits })
-                    .then(response => console.log(response.data.messagge))
+                    .then(response => location.replace('http://localhost:3000/exits'))
                     .catch(error => console.log(error))
             },
         },

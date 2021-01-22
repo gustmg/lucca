@@ -13,7 +13,7 @@ class InventoryExit extends Model
     protected $with=[ 'user','brand','exit_products'];
 
     public function user(){
-        return $this->belongsTo('App\Models\User', 'entry_user_id');
+        return $this->belongsTo('App\Models\User', 'exit_user_id');
     }
 
     public function brand(){

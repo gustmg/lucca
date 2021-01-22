@@ -3,11 +3,11 @@
         <v-container>
             <v-row>
                 <v-col cols="12">
-                    <h5 class="text-h5">Entradas de inventario</h5>
+                    <h5 class="text-h5">Salidas de inventario</h5>
                 </v-col>
                 <v-col cols="12" v-if="inventoryExits.length > 0">
-                    <!-- <v-row>
-                        <v-col cols="12" v-for="inventory_exit in exits" :key="inventory_exit.product_exit_id">
+                    <v-row>
+                        <v-col cols="12" v-for="inventory_exit in inventoryExits" :key="inventory_exit.product_exit_id">
                             <v-card>
                                 <v-container>
                                     <v-row>
@@ -42,13 +42,12 @@
                                                 :href="'/inventory_exits/' + inventory_exit.inventory_exit_id"
                                                 >Ver detalles</v-btn
                                             >
-                                            <v-btn block class="primary">Descargar</v-btn>
                                         </v-col>
                                     </v-row>
                                 </v-container>
                             </v-card>
                         </v-col>
-                    </v-row> -->
+                    </v-row>
                 </v-col>
                 <v-col cols="12" v-else align="center">
                     <div class="text-h4 text--secondary">
@@ -75,8 +74,8 @@
             AppLayout,
         },
 
-        mounted() {
-            this.fetchInventoryExits()
+        async mounted() {
+            await this.fetchInventoryExits()
         },
 
         data() {
@@ -87,7 +86,6 @@
 
         methods: {
             fetchInventoryExits: function() {
-                console.log('Hacinedo fetch')
                 axios
                     .post('fetchExits')
                     .then(response => {

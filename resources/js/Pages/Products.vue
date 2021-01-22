@@ -37,32 +37,6 @@
                 <v-row>
                     <v-col cols="12">
                         <h6 class="text-h6 pb-4">{{ brand.brand_name }}</h6>
-                        <v-row>
-                            <v-col cols="3">
-                                <v-select
-                                    v-model="brandSelectedCategory[index]"
-                                    solo
-                                    dense
-                                    clearable
-                                    label="Categoría"
-                                    :items="brand.brand_categories"
-                                    item-text="category_name"
-                                    item-value="category_id"
-                                ></v-select>
-                            </v-col>
-                            <v-col cols="3" v-show="brand.brand_id == 1">
-                                <v-select
-                                    v-model="selectedGender"
-                                    solo
-                                    dense
-                                    clearable
-                                    label="Género"
-                                    :items="genders"
-                                    item-text="gender_name"
-                                    item-value="gender_id"
-                                ></v-select>
-                            </v-col>
-                        </v-row>
                         <v-expansion-panels>
                             <v-expansion-panel v-for="product in brand.brand_products" :key="product.product_id">
                                 <v-expansion-panel-header>

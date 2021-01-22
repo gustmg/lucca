@@ -32,7 +32,7 @@ Route::middleware(['auth:sanctum', 'verified'])->resource('/brands', 'App\Http\C
 Route::middleware(['auth:sanctum', 'verified'])->resource('/entries', 'App\Http\Controllers\EntryController');
 Route::middleware(['auth:sanctum', 'verified'])->post('fetchEntries', 'App\Http\Controllers\EntryController@fetchEntries');
 
-Route::middleware(['auth:sanctum', 'verified'])->resource('/inventory_exits', 'App\Http\Controllers\ExitController');
-Route::middleware(['auth:sanctum', 'verified'])->post('fetchExits', 'App\Http\Controllers\ExitController@fetchExits');
+Route::middleware(['auth:sanctum', 'verified'])->resource('/inventory_exits', 'App\Http\Controllers\InventoryExitController');
+Route::middleware(['auth:sanctum', 'verified'])->post('fetchExits', 'App\Http\Controllers\InventoryExitController@fetchExits');
 
 Route::middleware(['auth:sanctum', 'verified'])->resource('/reports', 'App\Http\Controllers\ReportController');

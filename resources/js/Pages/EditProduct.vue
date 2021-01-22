@@ -114,7 +114,6 @@
                         Editar
                     </v-btn>
                 </v-col>
-                {{ product.product_colors }}
             </v-row>
         </v-container>
         <v-snackbar v-model="registerSnackbar">
@@ -177,6 +176,20 @@
                 },
 
                 deep: true,
+            },
+        },
+
+        computed: {
+            productColorsToRemove: function() {
+                return this.product.product_colors.filter(color => {
+                    return !this.productSelectedColors.includes(color.color_id)
+                })
+            },
+
+            productSizesToRemove: function() {
+                return this.product.product_sizes.filter(size => {
+                    return !this.productSelectedSizes.includes(size.size_id)
+                })
             },
         },
 
@@ -257,8 +270,8 @@
                         product_brand_id: this.product.product_brand_id,
                         product_colors: this.productSelectedColors,
                         product_sizes: this.productSelectedSizes,
-                        old_colors: this.product.product_colors,
-                        old_sizes: this.product.product_sizes,
+                        product_colors_to_remove: this.productColorsToRemove,
+                        product_sizes_to_remove: this.productSizesToRemove,
                     })
                     .then(response => {
                         this.messagge = response.data.messagge

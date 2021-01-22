@@ -15,9 +15,11 @@ class CreateExitsTable extends Migration
     {
         Schema::create('exits', function (Blueprint $table) {
             $table->id('exit_id');
+            $table->unsignedBigInteger('exit_brand_id');
             $table->unsignedBigInteger('exit_user_id');
             $table->timestamps();
 
+            $table->foreign('exit_brand_id')->references('brand_id')->on('brands');
             $table->foreign('exit_user_id')->references('id')->on('users');
         });
     }

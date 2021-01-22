@@ -154,9 +154,17 @@ class ProductController extends Controller
             }
         }
 
-        
-        // TODO: Remove Stock of old sizes and colors
+        foreach($request->product_colors_to_remove as $key=>$color_to_remove){
+            $delete_stock_by_product_color=ProductStock::where('product_id', $id)
+            ->where('color_id', $color_to_remove['color_id'])
+            ->delete();
+        }
 
+        foreach($request->product_sizes_to_remove as $key=>$size_to_remove){
+            $delete_stock_by_product_size=ProductStock::where('product_id', $id)
+            ->where('size_id', $size_to_remove['size_id'])
+            ->delete();
+        }
 
         return response()->json([
             "messagge" => "Producto registrado correctamente. Redireccionando...",
